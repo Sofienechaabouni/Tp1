@@ -1,5 +1,7 @@
 import { Body, Controller,Delete,Get,Param,Post, Put } from '@nestjs/common';
 import { get } from 'http';
+import { TodoDto } from 'src/todo-module/dto/todo.dto';
+import { UpdateTodoDto } from 'src/todo-module/dto/update-todo.dto';
 import { TodoModel } from 'src/todo-module/TodoModel';
 import { v4 as uuidv4 } from 'uuid';
 @Controller('todo-controller')
@@ -10,7 +12,7 @@ export class TodoControllerController {
         return this.todos
     }
     @Post()
-  addTodo(@Body() todoDto: TodoModel) {
+  addTodo(@Body() todoDto: TodoDto) {
     const todo = new TodoModel();
     todo.name = todoDto.name;
     todo.description = todoDto.description;
@@ -28,18 +30,20 @@ export class TodoControllerController {
   }
 
   @Put(':id')
-  updateTodo(@Param('id') id, @Body() updateTodoDto: TodoModel) {
+  updateTodo(@Param('id') id, @Body() updateTodoDto:UpdateTodoDto) {
     const todo = this.todos.find((todo) => todo.id == id);
-
-    if (updateTodoDto.name) {
-      todo.name = updateTodoDto.name;
-    }
-    if (updateTodoDto.description) {
-      todo.description = updateTodoDto.description;
-    }
-    if (updateTodoDto.status) {
-      todo.status = updateTodoDto.status;
-    }
+    updateTodoDto.name=todo.name??updateTodoDto.name;
+    // if (updateTodoDto.name) {
+    //   todo.name = updateTodoDto.name;
+    // }
+    updateTodoDto.description=todo.description??updateTodoDto.description;
+    // if (updateTodoDto.description) {
+    //   todo.description = updateTodoDto.description;
+    // }
+    updateTodoDto.status=todo.status??updateTodoDto.status
+    // if (updateTodoDto.status) {
+    //   todo.status = updateTodoDto.status;
+    // }
     return todo;
   }
 }
